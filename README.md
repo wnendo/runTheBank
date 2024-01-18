@@ -2,7 +2,9 @@ Olá, como vai?
 
 Alguns pontos legais que tomei a liberdade em fazer. 
 
-Criei uma documentação em SWAGGER, assim ficará mais facil acompanhar cada uma das apis e seus respectivos comportamentos, seu nome é doc_run_the_bank.yaml.
+Criei uma documentação em SWAGGER, assim ficará mais facil acompanhar cada uma das apis e seus respectivos comportamentos. 
+Seu nome é doc_run_the_bank.yaml.
+
 Criei também uma collection dos payloads no POSTMAN, introduzi a collection no projeto com o nome de RunTheBank_collection.
 
 Criei uma parte de criptografia com dados sensiveis, tais como o CPF/CNPJ, agencia e senha. 
