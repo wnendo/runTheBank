@@ -4,10 +4,16 @@ import com.wendel.test.runTheBank.adapter.controller.response.NotificationRespon
 import com.wendel.test.runTheBank.adapter.gateway.util.Json;
 import com.wendel.test.runTheBank.adapter.gateway.web.WebGateway;
 import com.wendel.test.runTheBank.domain.Transaction;
+import com.wendel.test.runTheBank.domain.validator.ApiException;
+import com.wendel.test.runTheBank.domain.validator.ExceptionMessage;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+@Service
+@Slf4j
 public class WebGatewayImpl implements WebGateway {
     private final OkHttpClient okHttpClient;
     private final Json json;
@@ -22,6 +28,7 @@ public class WebGatewayImpl implements WebGateway {
     @Override
     public NotificationResponse sendNotification(Transaction transaction) {
         try {
+            log.info("Making request to external api for notification");
             var transactionAsJson = json.toJson(transaction);
             RequestBody requestBody = RequestBody.create(JSON, transactionAsJson);
             Request request = new Request.Builder()
@@ -37,7 +44,8 @@ public class WebGatewayImpl implements WebGateway {
             }
             return json.fromJson(response.body().string(), NotificationResponse.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Error while sending notification to external API {}", e.getMessage());
+            throw new ApiException(ExceptionMessage.valueOf("Error while sending notification"));
         }
     }
 }
