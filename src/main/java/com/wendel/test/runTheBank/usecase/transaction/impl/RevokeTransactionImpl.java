@@ -10,61 +10,70 @@ import com.wendel.test.runTheBank.usecase.account.GetAccount;
 import com.wendel.test.runTheBank.usecase.account.SaveAccount;
 import com.wendel.test.runTheBank.usecase.notification.SendNotification;
 import com.wendel.test.runTheBank.usecase.transaction.CreateTransaction;
+import com.wendel.test.runTheBank.usecase.transaction.GetTransaction;
+import com.wendel.test.runTheBank.usecase.transaction.RevokeTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.SaveTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @Slf4j
-public class CreateTransactionImpl implements CreateTransaction {
+public class RevokeTransactionImpl implements RevokeTransaction {
     private final SaveTransaction saveTransaction;
     private final TransactionMapper transactionMapper;
     private final GetAccount getAccount;
+    private final GetTransaction getTransaction;
     private final SaveAccount saveAccount;
     private final SendNotification sendNotification;
 
-    public CreateTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, SaveAccount saveAccount, SendNotification sendNotification) {
+    public RevokeTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, GetTransaction getTransaction, SaveAccount saveAccount, SendNotification sendNotification) {
         this.saveTransaction = saveTransaction;
         this.transactionMapper = transactionMapper;
         this.getAccount = getAccount;
+        this.getTransaction = getTransaction;
         this.saveAccount = saveAccount;
         this.sendNotification = sendNotification;
     }
 
     @Override
-    public TransactionResponse execute(TransactionRequest transactionRequest){
+    public TransactionResponse execute(String id){
         try {
-            log.info("Creating transaction from account {} to account {}", transactionRequest.getFromAccount(), transactionRequest.getToAccount());
-            var transaction = transactionMapper.convertTransactionRequestToTransaction(transactionRequest);
+            log.info("Revoking transaction {}", id);
 
-            var transactionFrom = getAccount.execute(transaction.getFromAccount());
-            var transactionTo = getAccount.execute(transaction.getToAccount());
+            var transactionResponse = getTransaction.execute(id);
 
-            if (transactionFrom.getAccountStatus() != AccountStatus.ACTIVE || transactionFrom.getBalance().compareTo(transaction.getAmount()) < 0 ){
+            var transactionFrom = getAccount.execute(transactionResponse.getFromAccount());
+            var transactionTo = getAccount.execute(transactionResponse.getToAccount());
+
+            if (ChronoUnit.MINUTES.between(transactionResponse.getDate(), LocalDateTime.now()) > 15){
                 return TransactionResponse.builder()
-                        .id(transaction.getId())
-                        .message("Unable to make transaction")
+                        .id(transactionResponse.getId())
+                        .message("Unable to revoke transaction")
                         .build();
             }else{
-                log.info("Accounts found and there are balance to make transaction!");
-                transaction.setStatus(TransactionStatus.EXECUTED);
+                log.info("Date from transaction works, revoking transaction");
+                transactionResponse.setStatus(TransactionStatus.REVOKED);
+
+                var transaction = transactionMapper.convertTransactionResponseToTransaction(transactionResponse);
                 saveTransaction.execute(transaction);
 
-                updateBalanceAccount(transactionFrom, transactionTo, transaction.getAmount());
+                updateBalanceAccount(transactionTo, transactionFrom, transaction.getAmount());
 
                 sendNotification.execute(transaction);
 
                 return TransactionResponse.builder()
                         .id(transaction.getId())
-                        .message("Transaction was successful")
+                        .message("Transaction was successful revoked")
                         .build();
             }
         }catch (Exception e){
-            log.error("Error while trying to making transaction from account {} - {}", transactionRequest.getFromAccount(), e.getMessage());
+            log.error("Error while trying to revoking transaction {} - {}", id, e.getMessage());
             return TransactionResponse.builder()
-                    .message("Error while trying to making transaction from account")
+                    .message("Error while trying to revoking transaction")
                     .build();
         }
     }
@@ -77,10 +86,5 @@ public class CreateTransactionImpl implements CreateTransaction {
         accountTo.setBalance(balanceAccountTo);
         saveAccount.execute(accountFrom);
         saveAccount.execute(accountTo);
-    }
-    private void updateSecondBalanceAccount(Account account, BigDecimal amount){
-        var newBalance = account.getBalance().add(amount);
-        account.setBalance(newBalance);
-        saveAccount.execute(account);
     }
 }

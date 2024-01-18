@@ -13,7 +13,8 @@ public enum ExceptionMessage {
     ERROR_CPF_CNPJ_VALIDATE("CPF or CPNJ is not valid, please try again!"),
     ERROR_VALUE_TRANSACTION("Missing to value from transaction information"),
     NOT_NULL("Request cannot be null"),
-    UNAUTHORIZED("Unauthorized");
+    UNAUTHORIZED("Unauthorized"),
+    INVALID_JSON("Invalid json");
 
     private final String message;
 

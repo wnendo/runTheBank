@@ -1,6 +1,7 @@
 package com.wendel.test.runTheBank.adapter.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wendel.test.runTheBank.domain.enuns.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,4 +22,5 @@ public class TransactionResponse {
     private BigDecimal amount;
     private LocalDateTime date;
     private String message;
+    private TransactionStatus status;
 }

@@ -22,6 +22,20 @@ public class TransactionMapper {
     }
     public TransactionResponse convertTransactionToTransactionResponse(Transaction transaction) {
         return TransactionResponse.builder()
+                .id(transaction.getId())
+                .toAccount(transaction.getToAccount())
+                .fromAccount(transaction.getFromAccount())
+                .date(transaction.getDate())
+                .status(transaction.getStatus())
+                .build();
+    }
+    public Transaction convertTransactionResponseToTransaction(TransactionResponse transactionResponse) {
+        return Transaction.builder()
+                .id(transactionResponse.getId())
+                .toAccount(transactionResponse.getToAccount())
+                .fromAccount(transactionResponse.getFromAccount())
+                .date(transactionResponse.getDate())
+                .status(transactionResponse.getStatus())
                 .build();
     }
 

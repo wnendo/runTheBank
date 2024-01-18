@@ -7,17 +7,18 @@ import com.wendel.test.runTheBank.adapter.gateway.db.DbGateway;
 import com.wendel.test.runTheBank.domain.enuns.RegisterStatus;
 import com.wendel.test.runTheBank.usecase.cipher.EncryptRequest;
 import com.wendel.test.runTheBank.usecase.register.CreateRegister;
+import com.wendel.test.runTheBank.usecase.register.SaveRegister;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class CreateRegisterImpl implements CreateRegister {
-    private final DbGateway dbGateway;
+    private final SaveRegister saveRegister;
     private final RegisterMapper registerMapper;
 
-    public CreateRegisterImpl(DbGateway dbGateway, RegisterMapper registerMapper) {
-        this.dbGateway = dbGateway;
+    public CreateRegisterImpl(SaveRegister saveRegister, RegisterMapper registerMapper) {
+        this.saveRegister = saveRegister;
         this.registerMapper = registerMapper;
     }
 
@@ -26,7 +27,7 @@ public class CreateRegisterImpl implements CreateRegister {
         try {
             log.info("Creating a new register for cpf/cnpj {}", registerRequest.getCpfOrCnpj());
             var register = registerMapper.convertRegisterRequestToRegister(registerRequest);
-            dbGateway.saveRegister(register);
+            saveRegister.execute(register);
             return RegisterResponse.builder()
                     .id(register.getId())
                     .registerStatus(RegisterStatus.CREATED)
