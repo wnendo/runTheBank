@@ -1,12 +1,9 @@
 package com.wendel.test.runTheBank.usecase.register.impl;
 
-import com.wendel.test.runTheBank.adapter.controller.mapper.RegisterMapper;
-import com.wendel.test.runTheBank.adapter.controller.response.RegisterResponse;
 import com.wendel.test.runTheBank.adapter.gateway.db.DbGateway;
 import com.wendel.test.runTheBank.domain.Register;
 import com.wendel.test.runTheBank.domain.validator.ApiException;
 import com.wendel.test.runTheBank.domain.validator.ExceptionMessage;
-import com.wendel.test.runTheBank.usecase.register.GetRegister;
 import com.wendel.test.runTheBank.usecase.register.SaveRegister;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

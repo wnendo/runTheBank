@@ -9,7 +9,6 @@ import com.wendel.test.runTheBank.usecase.account.SaveAccount;
 import com.wendel.test.runTheBank.usecase.notification.SendNotification;
 import com.wendel.test.runTheBank.usecase.transaction.CancelTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.GetTransaction;
-import com.wendel.test.runTheBank.usecase.transaction.RevokeTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.SaveTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

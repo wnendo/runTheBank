@@ -1,15 +1,12 @@
 package com.wendel.test.runTheBank.usecase.transaction.impl;
 
 import com.wendel.test.runTheBank.adapter.controller.mapper.TransactionMapper;
-import com.wendel.test.runTheBank.adapter.controller.request.TransactionRequest;
 import com.wendel.test.runTheBank.adapter.controller.response.TransactionResponse;
 import com.wendel.test.runTheBank.domain.Account;
-import com.wendel.test.runTheBank.domain.enuns.AccountStatus;
 import com.wendel.test.runTheBank.domain.enuns.TransactionStatus;
 import com.wendel.test.runTheBank.usecase.account.GetAccount;
 import com.wendel.test.runTheBank.usecase.account.SaveAccount;
 import com.wendel.test.runTheBank.usecase.notification.SendNotification;
-import com.wendel.test.runTheBank.usecase.transaction.CreateTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.GetTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.RevokeTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.SaveTransaction;
