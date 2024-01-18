@@ -26,6 +26,7 @@ public class CreateAccountImpl implements CreateAccount {
             var account = accountMapper.convertAccountRequestToAccount(accountRequest);
             log.info("Creating account with id {}", account.getId());
             saveAccount.execute(account);
+            log.info("Account created successfully");
             return AccountResponse.builder()
                     .id(account.getId())
                     .status(AccountStatus.ACTIVE)

@@ -59,6 +59,8 @@ public class CreateTransactionImpl implements CreateTransaction {
 
                 sendNotification.execute(transaction);
 
+                log.info("Transaction created successfully");
+
                 return TransactionResponse.builder()
                         .id(transaction.getId())
                         .message("Transaction was successful")

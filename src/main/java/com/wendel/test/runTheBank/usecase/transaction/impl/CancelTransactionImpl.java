@@ -65,6 +65,8 @@ public class CancelTransactionImpl implements CancelTransaction {
 
                 sendNotification.execute(transaction);
 
+                log.info("Transaction canceled successfully");
+
                 return TransactionResponse.builder()
                         .id(transaction.getId())
                         .message("Transaction was successful canceled")

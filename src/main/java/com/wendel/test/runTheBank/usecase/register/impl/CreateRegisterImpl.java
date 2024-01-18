@@ -26,6 +26,7 @@ public class CreateRegisterImpl implements CreateRegister {
             log.info("Creating a new register for cpf/cnpj {}", registerRequest.getCpfOrCnpj());
             var register = registerMapper.convertRegisterRequestToRegister(registerRequest);
             saveRegister.execute(register);
+            log.info("Register created successfully");
             return RegisterResponse.builder()
                     .id(register.getId())
                     .status(RegisterStatus.CREATED)

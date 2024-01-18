@@ -49,7 +49,7 @@ public class RevokeTransactionImpl implements RevokeTransaction {
             var transactionFrom = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getFromAccount()));
             var transactionTo = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getToAccount()));
 
-            if (ChronoUnit.MINUTES.between(transactionResponse.getDate(), LocalDateTime.now()) > 15){
+            if (ChronoUnit.MINUTES.between(transactionResponse.getDate(), LocalDateTime.now()) > 10){
                 return TransactionResponse.builder()
                         .id(transactionResponse.getId())
                         .message("Unable to revoke transaction")
@@ -64,6 +64,8 @@ public class RevokeTransactionImpl implements RevokeTransaction {
                 updateBalanceAccount(transactionTo, transactionFrom, transaction.getAmount());
 
                 sendNotification.execute(transaction);
+
+                log.info("Transaction revoked successfully");
 
                 return TransactionResponse.builder()
                         .id(transaction.getId())

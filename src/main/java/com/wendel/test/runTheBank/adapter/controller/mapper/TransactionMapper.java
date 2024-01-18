@@ -25,6 +25,7 @@ public class TransactionMapper {
                 .id(transaction.getId())
                 .toAccount(transaction.getToAccount())
                 .fromAccount(transaction.getFromAccount())
+                .amount(transaction.getAmount())
                 .date(transaction.getDate())
                 .status(transaction.getStatus())
                 .build();
@@ -34,6 +35,7 @@ public class TransactionMapper {
                 .id(transactionResponse.getId())
                 .toAccount(transactionResponse.getToAccount())
                 .fromAccount(transactionResponse.getFromAccount())
+                .amount(transactionResponse.getAmount())
                 .date(transactionResponse.getDate())
                 .status(transactionResponse.getStatus())
                 .build();
