@@ -24,14 +24,15 @@ public class GetAccountImpl implements GetAccount {
     }
 
     @Override
-    public Account execute(String id){
+    public AccountResponse execute(String id){
         try{
             log.info("Searching for account {}", id);
-            return dbGateway.getAccount(id);
+            return accountMapper.convertAccountToAccountResponse(dbGateway.getAccount(id));
         }catch (Exception e){
             log.error("Error while getting account with id {} - {}", id, e.getMessage());
-            return Account.builder()
+            return AccountResponse.builder()
                     .id(id)
+                    .message("Error while searching for account")
                     .build();
         }
     }

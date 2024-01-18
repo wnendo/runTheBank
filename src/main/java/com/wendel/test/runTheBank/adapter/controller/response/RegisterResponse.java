@@ -16,12 +16,12 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisterResponse {
+    private String id;
     private String name;
     private String cpfOrCnpj;
     private String address;
     private String password;
     private String message;
-    private String id;
-    private RegisterStatus registerStatus;
+    private RegisterStatus status;
     private List<Account> account;
 }

@@ -31,6 +31,8 @@ public class AccountEntity {
     private String id;
     @Column(name = "agency", unique=true, nullable = false)
     private String agency;
+    @Column(name = "account", unique=true, nullable = false)
+    private String accountNumber;
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
     @Column(name = "status", nullable = false)

@@ -2,7 +2,6 @@ package com.wendel.test.runTheBank.adapter.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wendel.test.runTheBank.domain.enuns.AccountStatus;
-import com.wendel.test.runTheBank.domain.enuns.RegisterStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,8 @@ import java.math.BigDecimal;
 public class AccountResponse {
     private String id;
     private String registerId;
-    private AccountStatus accountStatus;
+    private AccountStatus status;
+    private String accountNumber;
     private String message;
     private String agency;
     private BigDecimal balance;

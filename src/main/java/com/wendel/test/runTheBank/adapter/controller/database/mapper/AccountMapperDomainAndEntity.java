@@ -9,6 +9,8 @@ import com.wendel.test.runTheBank.usecase.cipher.DecryptRequest;
 import com.wendel.test.runTheBank.usecase.cipher.EncryptRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 public class AccountMapperDomainAndEntity {
     private final EncryptRequest encryptRequest;
@@ -25,6 +27,7 @@ public class AccountMapperDomainAndEntity {
                 .agency(encryptRequest.execute(account.getAgency()))
                 .balance(account.getBalance())
                 .status(account.getAccountStatus().name())
+                .accountNumber(account.getAccountNumber())
                 .registerEntity(RegisterEntity.builder().id(account.getRegisterId()).build())
                 .build();
     }
@@ -33,6 +36,7 @@ public class AccountMapperDomainAndEntity {
                 .id(accountEntity.getId())
                 .agency(decryptRequest.execute(accountEntity.getAgency()))
                 .balance(accountEntity.getBalance())
+                .accountNumber(accountEntity.getAccountNumber())
                 .accountStatus(AccountStatus.getAccountStatusByString(accountEntity.getStatus()))
                 .registerId(accountEntity.getRegisterEntity().getId())
                 .build();

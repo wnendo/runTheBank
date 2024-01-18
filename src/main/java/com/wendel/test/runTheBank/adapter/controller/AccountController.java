@@ -9,6 +9,7 @@ import com.wendel.test.runTheBank.usecase.account.CreateAccount;
 import com.wendel.test.runTheBank.usecase.account.GetAccount;
 import com.wendel.test.runTheBank.usecase.register.CreateRegister;
 import com.wendel.test.runTheBank.usecase.register.GetRegister;
+import io.unlogged.Unlogged;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class AccountController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Account getRegister(
+    public AccountResponse getRegister(
             @RequestParam String id) {
         return getAccount.execute(id);
     }

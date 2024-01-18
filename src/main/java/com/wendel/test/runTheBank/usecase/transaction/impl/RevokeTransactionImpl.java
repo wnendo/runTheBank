@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.usecase.transaction.impl;
 
+import com.wendel.test.runTheBank.adapter.controller.mapper.AccountMapper;
 import com.wendel.test.runTheBank.adapter.controller.mapper.TransactionMapper;
 import com.wendel.test.runTheBank.adapter.controller.response.TransactionResponse;
 import com.wendel.test.runTheBank.domain.Account;
@@ -23,14 +24,16 @@ public class RevokeTransactionImpl implements RevokeTransaction {
     private final SaveTransaction saveTransaction;
     private final TransactionMapper transactionMapper;
     private final GetAccount getAccount;
+    private final AccountMapper accountMapper;
     private final GetTransaction getTransaction;
     private final SaveAccount saveAccount;
     private final SendNotification sendNotification;
 
-    public RevokeTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, GetTransaction getTransaction, SaveAccount saveAccount, SendNotification sendNotification) {
+    public RevokeTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, AccountMapper accountMapper, GetTransaction getTransaction, SaveAccount saveAccount, SendNotification sendNotification) {
         this.saveTransaction = saveTransaction;
         this.transactionMapper = transactionMapper;
         this.getAccount = getAccount;
+        this.accountMapper = accountMapper;
         this.getTransaction = getTransaction;
         this.saveAccount = saveAccount;
         this.sendNotification = sendNotification;
@@ -43,8 +46,8 @@ public class RevokeTransactionImpl implements RevokeTransaction {
 
             var transactionResponse = getTransaction.execute(id);
 
-            var transactionFrom = getAccount.execute(transactionResponse.getFromAccount());
-            var transactionTo = getAccount.execute(transactionResponse.getToAccount());
+            var transactionFrom = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getFromAccount()));
+            var transactionTo = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getToAccount()));
 
             if (ChronoUnit.MINUTES.between(transactionResponse.getDate(), LocalDateTime.now()) > 15){
                 return TransactionResponse.builder()

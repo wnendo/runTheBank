@@ -1,0 +1,479 @@
+openapi: "3.0.2"
+
+info:
+  title: Run The Bank
+  description: Sistema responsável pela criação e manipulação de contas
+  version: "1.0"
+
+servers:
+  - url: http://localhost:8080/
+
+
+tags:
+  - name: Registros de Clientes
+    description: Criar e listar todos os registros de clientes.
+  - name: Conta
+    description: Criar e listar todas as contas referentes aos registros uma vez já criados.
+  - name: Transações
+    description: Criar, listas, revogar e cancelar transações refentes a contas.
+
+paths:
+  # Registros de Clientes
+  /register:
+    post:
+      tags:
+        - Registros de Clientes
+      summary: Criar registro
+      description: Cria um registro para o cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              Register:
+                $ref: '#/components/examples/RegisterRequest'
+
+      responses:
+        200:
+          description: Registro Criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/RegisterResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Não autorizado
+
+    get:
+      tags:
+        - Registros de Clientes
+      summary: Listar registro
+      description: Lista as informações de registro do cliente
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: UUID do registro uma vez já criado
+      responses:
+        200:
+          description: Informações do registro encontrado
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/RegisterResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/RegisterResponse'
+        400:
+          description: Bad Request
+        404:
+          description: Nenhum registro encontrado
+        401:
+          description: Não autorizado
+
+  # Conta
+  /account:
+    post:
+      tags:
+        - Conta
+      summary: Criar conta
+      description: Cria uma conta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+            examples:
+              Account:
+                $ref: '#/components/examples/AccountRequest'
+
+      responses:
+        200:
+          description: Conta Criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/AccountResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Não autorizado
+
+    get:
+      tags:
+        - Conta
+      summary: Listar conta
+      description: Lista as informações da conta
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: UUID da conta uma vez já criada
+      responses:
+        200:
+          description: Informações da conta encontrada
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AccountResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/AccountResponse'
+        400:
+          description: Bad Request
+        404:
+          description: Nenhuma conta encontrada
+        401:
+          description: Não autorizado
+
+  # Transações da conta
+  /transaction:
+    post:
+      tags:
+        - Transações
+      summary: Criar transações
+      description: Cria uma transação entre duas contas existentes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+            examples:
+              WebHook:
+                $ref: '#/components/examples/TransactionRequest'
+
+      responses:
+        200:
+          description: Transação Criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/TransactionResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Não autorizado
+    patch:
+      tags:
+        - Transações
+      summary: Reversção de transações
+      description: Reverte uma transação entre duas contas existentes
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: UUID da transação uma vez já criada
+
+      responses:
+        200:
+          description: Transação Criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/TransactionResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Não autorizado
+
+    delete:
+      tags:
+        - Transações
+      summary: Cancelar transação
+      description: Cancela uma transação entre duas contas existentes
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: UUID da transação uma vez já criada
+      responses:
+        200:
+          description: Transação Criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/TransactionResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Não autorizado
+
+    get:
+      tags:
+        - Transações
+      summary: Listar transações
+      description: Lista as informações de transação entre duas contas
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: UUID da transação uma vez já criada
+      responses:
+        200:
+          description: Informações da transação encontrada
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/TransactionResponse'
+              examples:
+                Register:
+                  $ref: '#/components/examples/TransactionResponse'
+        400:
+          description: Bad Request
+        404:
+          description: Nenhuma transação encontrada
+        401:
+          description: Não autorizado
+
+# Components
+components:
+  schemas:
+    RegisterResponse:
+      type: object
+      required:
+        - name
+        - cpfOrCnpj
+        - address
+        - password
+      properties:
+        id:
+          type: string
+          description: UUID gerado pelo próprio sistema
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        name:
+          type: string
+          description: Nome do usuário
+          example: Wendel Sousa
+        cpfOrCnpj:
+          type: string
+          description: Cpf ou cnpj utilizado pelo usuário
+          example: 42050445855
+        address:
+          type: string
+          description: Endereço do usuário
+          example: Rua um, 201
+        password:
+          type: string
+          description: Senha criada pelo usuário
+          example: password
+        message:
+          type: string
+          description: Mensagem situacional caso dê falha no processo
+          example: Error while creating register
+        status:
+          type: string
+          description: Status referente ao registro
+          example: CREATED
+        account:
+          $ref: '#/components/schemas/AccountResponse'
+
+    RegisterRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: UUID gerado pelo próprio sistema
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        name:
+          type: string
+          description: Nome do usuário
+          example: Wendel Sousa
+        cpfOrCnpj:
+          type: string
+          description: Cpf ou cnpj utilizado pelo usuário
+          example: 42050445855
+        address:
+          type: string
+          description: Endereço do usuário
+          example: Rua um, 201
+        password:
+          type: string
+          description: Senha criada pelo usuário
+          example: password
+
+    AccountResponse:
+      type: object
+      required:
+        - registerId
+        - agengy
+      properties:
+        id:
+          type: string
+          description: UUID gerado pelo próprio sistema
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        registerId:
+          type: string
+          description: UUID gerado pelo próprio sistema e referente ao registro criado
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        accountNumber:
+          type: string
+          description: Numero da conta do cliente gerado pelo sistema
+          example: 1520
+        agengy:
+          type: string
+          description: Agencia em que ele deseja abrir a conta
+          example: 1050
+        balance:
+          type: number
+          description: Valor de saldo na conta do cliente. (Caso não haja um registro na inserção da conta, o sistema gerará um saldo aleatório para o cliente)
+          example: 1000
+        status:
+          type: string
+          description: Status da conta do cliente
+          example: ACTIVE
+        message:
+          type: string
+          description: Mensagem situacional caso dê falha no processo
+          example: Error while creating account
+
+    AccountRequest:
+      type: object
+      properties:
+        registerId:
+          type: string
+          description: UUID gerado pelo próprio sistema e referente ao registro criado
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        agengy:
+          type: string
+          description: Agencia em que ele deseja abrir a conta
+          example: 1050
+        balance:
+          type: number
+          description: Valor de saldo na conta do cliente. (Caso não haja um registro na inserção da conta, o sistema gerará um saldo aleatório para o cliente)
+          example: 1000
+
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: UUID gerado pelo próprio sistema
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        fromAccount:
+          type: string
+          description: UUID gerado pelo próprio sistema referente a conta em que será debitado o valor de transação
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        toAccount:
+          type: string
+          description: UUID gerado pelo próprio sistema referente a conta em que será creditado o valor de transação
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        amount:
+          type: number
+          description: Valor da transação
+          example: 100
+        date:
+          type: string
+          description: Data em que a transação foi efetivada
+          example: 2024/01/18 03:00:00
+        status:
+          type: string
+          description: Status da transação
+          example: EXECUTED
+        message:
+          type: string
+          description: Mensagem situacional caso dê falha no processo
+          example: Error while creating transaction
+
+    TransactionRequest:
+      type: object
+      properties:
+        fromAccount:
+          type: string
+          description: UUID gerado pelo próprio sistema referente a conta em que será debitado o valor de transação
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        toAccount:
+          type: string
+          description: UUID gerado pelo próprio sistema referente a conta em que será creditado o valor de transação
+          example: 9ea2772e-089a-4335-8999-acc234455fcf
+        amount:
+          type: number
+          description: Valor da transação
+          example: 100
+  examples:
+    RegisterRequest:
+      value:
+        name: Wendel Sousa
+        cpfOrCnpj: 45050477865
+        address: Rua um, 201
+        password: password
+    RegisterResponse:
+      value:
+        id: 5054cb4e-328a-11ec-8d3d-0242ac130004
+        name: Wendel Sousa
+        cpfOrCnpj: 45050477865
+        address: Rua um, 201
+        password: password
+        message: Error while create register (situacional)
+        RegisterStatus: CREATED - NOT_CREATED
+        account:
+          id: 32154cb4e-328a-11ec-8d3d-0242ac13002
+          registerId: 5054cb4e-328a-11ec-8d3d-0242ac130004
+          status: ACTIVE - INACTIVE
+          message: Error while getting account (situacional)
+          accountNumber: 150450
+          agency: 0104
+          balance: 1000
+
+    AccountRequest:
+      value:
+        registerId: 5054cb4e-328a-11ec-8d3d-0242ac130004
+        agency: 0104
+        balance: 1000 (não é requerido)
+    AccountResponse:
+      value:
+        id: 32154cb4e-328a-11ec-8d3d-0242ac13002
+        registerId: 5054cb4e-328a-11ec-8d3d-0242ac130004
+        status: ACTIVE - INACTIVE
+        message: Error while getting account (situacional)
+        accountNumber: 150450
+        agency: 0104
+        balance: 1000
+
+    TransactionRequest:
+      value:
+        id: 32154cb4e-328a-11ec-8d3d-0242ac13002
+        fromAccount: 3654cb4e-328a-11ec-8d3d-0242ac130023
+        toAccount: 1154cb4e-328a-11ec-8d3d-0242ac130051
+        amount: 150
+        date: 2024/01/18 03:00:00
+        message: Error while making transaction
+        status: EXECUTED - REVOKED - CANCELED
+    TransactionResponse:
+      value:
+        id: 32154cb4e-328a-11ec-8d3d-0242ac13002
+        fromAccount: 3654cb4e-328a-11ec-8d3d-0242ac130023
+        toAccount: 1154cb4e-328a-11ec-8d3d-0242ac130051
+        amount: 150
+        date: 2024/01/18 03:00:00
+        message: Error while making transaction
+        status: EXECUTED - REVOKED - CANCELED

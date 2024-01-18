@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.usecase.transaction.impl;
 
+import com.wendel.test.runTheBank.adapter.controller.mapper.AccountMapper;
 import com.wendel.test.runTheBank.adapter.controller.mapper.TransactionMapper;
 import com.wendel.test.runTheBank.adapter.controller.response.TransactionResponse;
 import com.wendel.test.runTheBank.domain.Account;
@@ -22,14 +23,16 @@ import java.time.temporal.ChronoUnit;
 public class CancelTransactionImpl implements CancelTransaction {
     private final SaveTransaction saveTransaction;
     private final TransactionMapper transactionMapper;
+    private final AccountMapper accountMapper;
     private final GetAccount getAccount;
     private final GetTransaction getTransaction;
     private final SaveAccount saveAccount;
     private final SendNotification sendNotification;
 
-    public CancelTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, GetTransaction getTransaction, SaveAccount saveAccount, SendNotification sendNotification) {
+    public CancelTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, AccountMapper accountMapper, GetAccount getAccount, GetTransaction getTransaction, SaveAccount saveAccount, SendNotification sendNotification) {
         this.saveTransaction = saveTransaction;
         this.transactionMapper = transactionMapper;
+        this.accountMapper = accountMapper;
         this.getAccount = getAccount;
         this.getTransaction = getTransaction;
         this.saveAccount = saveAccount;
@@ -43,8 +46,8 @@ public class CancelTransactionImpl implements CancelTransaction {
 
             var transactionResponse = getTransaction.execute(id);
 
-            var transactionFrom = getAccount.execute(transactionResponse.getFromAccount());
-            var transactionTo = getAccount.execute(transactionResponse.getToAccount());
+            var transactionFrom = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getFromAccount()));
+            var transactionTo = accountMapper.convertAccountResponseToAccount(getAccount.execute(transactionResponse.getToAccount()));
 
             if (ChronoUnit.MINUTES.between(transactionResponse.getDate(), LocalDateTime.now()) > 5){
                 return TransactionResponse.builder()

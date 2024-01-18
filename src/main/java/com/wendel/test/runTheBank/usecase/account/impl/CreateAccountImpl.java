@@ -1,28 +1,22 @@
 package com.wendel.test.runTheBank.usecase.account.impl;
 
 import com.wendel.test.runTheBank.adapter.controller.mapper.AccountMapper;
-import com.wendel.test.runTheBank.adapter.controller.mapper.RegisterMapper;
 import com.wendel.test.runTheBank.adapter.controller.request.AccountRequest;
-import com.wendel.test.runTheBank.adapter.controller.request.RegisterRequest;
 import com.wendel.test.runTheBank.adapter.controller.response.AccountResponse;
-import com.wendel.test.runTheBank.adapter.controller.response.RegisterResponse;
-import com.wendel.test.runTheBank.adapter.gateway.db.DbGateway;
 import com.wendel.test.runTheBank.domain.enuns.AccountStatus;
-import com.wendel.test.runTheBank.domain.enuns.RegisterStatus;
 import com.wendel.test.runTheBank.usecase.account.CreateAccount;
-import com.wendel.test.runTheBank.usecase.cipher.EncryptRequest;
-import com.wendel.test.runTheBank.usecase.register.CreateRegister;
+import com.wendel.test.runTheBank.usecase.account.SaveAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class CreateAccountImpl implements CreateAccount {
-    private final DbGateway dbGateway;
+    private final SaveAccount saveAccount;
     private final AccountMapper accountMapper;
 
-    public CreateAccountImpl(DbGateway dbGateway, AccountMapper accountMapper) {
-        this.dbGateway = dbGateway;
+    public CreateAccountImpl(SaveAccount saveAccount, AccountMapper accountMapper) {
+        this.saveAccount = saveAccount;
         this.accountMapper = accountMapper;
     }
 
@@ -31,10 +25,10 @@ public class CreateAccountImpl implements CreateAccount {
         try {
             var account = accountMapper.convertAccountRequestToAccount(accountRequest);
             log.info("Creating account with id {}", account.getId());
-            dbGateway.saveAccount(account);
+            saveAccount.execute(account);
             return AccountResponse.builder()
                     .id(account.getId())
-                    .accountStatus(AccountStatus.ACTIVE)
+                    .status(AccountStatus.ACTIVE)
                     .build();
         } catch (Exception e) {
             log.error("Error while trying to CREATE account {}", e.getMessage());

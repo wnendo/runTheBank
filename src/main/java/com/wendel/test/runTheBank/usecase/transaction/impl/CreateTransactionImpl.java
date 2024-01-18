@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.usecase.transaction.impl;
 
+import com.wendel.test.runTheBank.adapter.controller.mapper.AccountMapper;
 import com.wendel.test.runTheBank.adapter.controller.mapper.TransactionMapper;
 import com.wendel.test.runTheBank.adapter.controller.request.TransactionRequest;
 import com.wendel.test.runTheBank.adapter.controller.response.TransactionResponse;
@@ -21,13 +22,15 @@ import java.math.BigDecimal;
 public class CreateTransactionImpl implements CreateTransaction {
     private final SaveTransaction saveTransaction;
     private final TransactionMapper transactionMapper;
+    private final AccountMapper accountMapper;
     private final GetAccount getAccount;
     private final SaveAccount saveAccount;
     private final SendNotification sendNotification;
 
-    public CreateTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, GetAccount getAccount, SaveAccount saveAccount, SendNotification sendNotification) {
+    public CreateTransactionImpl(SaveTransaction saveTransaction, TransactionMapper transactionMapper, AccountMapper accountMapper, GetAccount getAccount, SaveAccount saveAccount, SendNotification sendNotification) {
         this.saveTransaction = saveTransaction;
         this.transactionMapper = transactionMapper;
+        this.accountMapper = accountMapper;
         this.getAccount = getAccount;
         this.saveAccount = saveAccount;
         this.sendNotification = sendNotification;
@@ -39,8 +42,8 @@ public class CreateTransactionImpl implements CreateTransaction {
             log.info("Creating transaction from account {} to account {}", transactionRequest.getFromAccount(), transactionRequest.getToAccount());
             var transaction = transactionMapper.convertTransactionRequestToTransaction(transactionRequest);
 
-            var transactionFrom = getAccount.execute(transaction.getFromAccount());
-            var transactionTo = getAccount.execute(transaction.getToAccount());
+            var transactionFrom = accountMapper.convertAccountResponseToAccount(getAccount.execute(transaction.getFromAccount()));
+            var transactionTo = accountMapper.convertAccountResponseToAccount(getAccount.execute(transaction.getToAccount()));
 
             if (transactionFrom.getAccountStatus() != AccountStatus.ACTIVE || transactionFrom.getBalance().compareTo(transaction.getAmount()) < 0 ){
                 return TransactionResponse.builder()

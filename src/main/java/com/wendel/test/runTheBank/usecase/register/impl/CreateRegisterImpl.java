@@ -28,12 +28,12 @@ public class CreateRegisterImpl implements CreateRegister {
             saveRegister.execute(register);
             return RegisterResponse.builder()
                     .id(register.getId())
-                    .registerStatus(RegisterStatus.CREATED)
+                    .status(RegisterStatus.CREATED)
                     .build();
         }catch (Exception e){
             log.error("Error while trying to registering client {}", e.getMessage());
             return RegisterResponse.builder()
-                    .registerStatus(RegisterStatus.CREATED)
+                    .status(RegisterStatus.NOT_CREATED)
                     .message("Error while registering client")
                     .build();
         }

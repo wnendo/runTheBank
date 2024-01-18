@@ -1,12 +1,8 @@
 package com.wendel.test.runTheBank.adapter.controller;
 
-import com.wendel.test.runTheBank.adapter.controller.request.RegisterRequest;
 import com.wendel.test.runTheBank.adapter.controller.request.TransactionRequest;
-import com.wendel.test.runTheBank.adapter.controller.response.RegisterResponse;
 import com.wendel.test.runTheBank.adapter.controller.response.TransactionResponse;
 import com.wendel.test.runTheBank.adapter.gateway.util.TransactionValidate;
-import com.wendel.test.runTheBank.usecase.register.CreateRegister;
-import com.wendel.test.runTheBank.usecase.register.GetRegister;
 import com.wendel.test.runTheBank.usecase.transaction.CancelTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.CreateTransaction;
 import com.wendel.test.runTheBank.usecase.transaction.GetTransaction;
