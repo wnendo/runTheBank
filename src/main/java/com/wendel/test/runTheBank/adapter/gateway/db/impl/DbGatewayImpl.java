@@ -1,15 +1,12 @@
 package com.wendel.test.runTheBank.adapter.gateway.db.impl;
 
-import com.wendel.test.runTheBank.adapter.controller.database.mapper.AccountMapperDomainAndEntity;
-import com.wendel.test.runTheBank.adapter.controller.database.mapper.RegisterMapperDomainAndEntity;
-import com.wendel.test.runTheBank.adapter.controller.database.mapper.TransactionMapperDomainAndEntity;
-import com.wendel.test.runTheBank.adapter.controller.database.repository.AccountRepository;
-import com.wendel.test.runTheBank.adapter.controller.database.repository.RegisterRepository;
-import com.wendel.test.runTheBank.adapter.controller.database.repository.TransactionRepository;
+import com.wendel.test.runTheBank.adapter.controller.database.mapper.ClientMapperDomainAndEntity;
+import com.wendel.test.runTheBank.adapter.controller.database.mapper.AddressMapperDomainAndEntity;
+import com.wendel.test.runTheBank.adapter.controller.database.repository.ClientRepository;
+import com.wendel.test.runTheBank.adapter.controller.database.repository.AddressRepository;
 import com.wendel.test.runTheBank.adapter.gateway.db.DbGateway;
-import com.wendel.test.runTheBank.domain.Account;
-import com.wendel.test.runTheBank.domain.Register;
-import com.wendel.test.runTheBank.domain.Transaction;
+import com.wendel.test.runTheBank.domain.Client;
+import com.wendel.test.runTheBank.domain.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,86 +14,81 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DbGatewayImpl implements DbGateway {
 
-    private final RegisterRepository registerRepository;
-    private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
-    private final RegisterMapperDomainAndEntity registerMapperDomainAndEntity;
-    private final AccountMapperDomainAndEntity accountMapperDomainAndEntity;
-    private final TransactionMapperDomainAndEntity transactionMapperDomainAndEntity;
+    private final AddressRepository addressRepository;
+    private final ClientRepository clientRepository;
+    private final AddressMapperDomainAndEntity addressMapperDomainAndEntity;
+    private final ClientMapperDomainAndEntity clientMapperDomainAndEntity;
 
-    public DbGatewayImpl(RegisterRepository registerRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, RegisterMapperDomainAndEntity registerMapperDomainAndEntity, AccountMapperDomainAndEntity accountMapperDomainAndEntity, TransactionMapperDomainAndEntity transactionMapperDomainAndEntity) {
-        this.registerRepository = registerRepository;
-        this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
-        this.registerMapperDomainAndEntity = registerMapperDomainAndEntity;
-        this.accountMapperDomainAndEntity = accountMapperDomainAndEntity;
-        this.transactionMapperDomainAndEntity = transactionMapperDomainAndEntity;
+    public DbGatewayImpl(AddressRepository addressRepository, ClientRepository clientRepository, AddressMapperDomainAndEntity addressMapperDomainAndEntity, ClientMapperDomainAndEntity clientMapperDomainAndEntity) {
+        this.addressRepository = addressRepository;
+        this.clientRepository = clientRepository;
+        this.addressMapperDomainAndEntity = addressMapperDomainAndEntity;
+        this.clientMapperDomainAndEntity = clientMapperDomainAndEntity;
     }
 
     @Override
-    public void saveRegister(Register register) {
+    public void saveAddress(Address address) {
         try {
-            log.info("Saving register {}", register.getId());
-            registerRepository.save(registerMapperDomainAndEntity.convertRegisterToRegisterEntity(register));
+            log.info("Saving address {}", address.getId());
+            addressRepository.save(addressMapperDomainAndEntity.convertAddressToAddressEntity(address));
         }catch (Exception e){
-            log.error("Error while trying to save register with id {}", register.getId());
+            log.error("Error while trying to save address with id {}", address.getId());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Register getRegister(String id) {
+    public Address getAddress(String id) {
         try {
-            return registerMapperDomainAndEntity.convertRegisterEntityToRegister(
-                    registerRepository.findById(id)
+            return addressMapperDomainAndEntity.convertAddressEntityToAddress(
+                    addressRepository.findById(id)
                             .orElseThrow());
         }catch (Exception e){
-            log.error("Error while trying to get register with id {}", id);
+            log.error("Error while trying to get address with id {}", id);
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void saveAccount(Account account) {
+    public void deleteAddress(String id) {
         try {
-            accountRepository.save(accountMapperDomainAndEntity.convertAccountToAccountEntity(account));
+            addressRepository.deleteById(id);
         }catch (Exception e){
-            log.error("Error while trying to save account with id {} - {}", account.getId(), e.getMessage());
+            log.error("Error while trying to delete address with id {}", id);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void saveClient(Client client) {
+        try {
+            clientRepository.save(clientMapperDomainAndEntity.convertClientToClientEntity(client));
+        }catch (Exception e){
+            log.error("Error while trying to save client with id {} - {}", client.getId(), e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
 
     @Override
-    public Account getAccount(String id) {
+    public Client getClient(String id) {
         try {
-            return accountMapperDomainAndEntity.convertAcccountEntityToAccount(
-                    accountRepository.findById(id)
+            return clientMapperDomainAndEntity.convertClientEntityToClient(
+                    clientRepository.findByCpf(id)
                             .orElseThrow());
         }catch (Exception e){
-            log.error("Error while trying to get account with id {}", id);
+            log.error("Error while trying to get client with id {}", id);
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void saveTransaction(Transaction transaction) {
-        try {
-            transactionRepository.save(transactionMapperDomainAndEntity.convertTransactionToTransactionEntity(transaction));
-        }catch (Exception e){
-            log.error("Error while trying to save transaction with id {} - {}", transaction.getId(), e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
-    public Transaction getTransaction(String id) {
+    public void deleteClient(String id) {
         try {
-            return transactionMapperDomainAndEntity.convertTransactionEntityToTransaction(
-                    transactionRepository.findById(id)
-                            .orElseThrow());
+            clientRepository.deleteById(id);
         }catch (Exception e){
-            log.error("Error while trying to get transaction with id {}", id);
+            log.error("Error while trying to delete client with id {}", id);
             throw new RuntimeException(e);
         }
     }

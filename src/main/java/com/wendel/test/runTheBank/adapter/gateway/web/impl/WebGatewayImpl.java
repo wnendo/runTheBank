@@ -1,9 +1,9 @@
 package com.wendel.test.runTheBank.adapter.gateway.web.impl;
 
-import com.wendel.test.runTheBank.adapter.controller.response.NotificationResponse;
+import com.wendel.test.runTheBank.adapter.controller.response.AddressFromViaCep;
 import com.wendel.test.runTheBank.adapter.gateway.util.Json;
 import com.wendel.test.runTheBank.adapter.gateway.web.WebGateway;
-import com.wendel.test.runTheBank.domain.Transaction;
+import com.wendel.test.runTheBank.domain.Address;
 import com.wendel.test.runTheBank.domain.validator.ApiException;
 import com.wendel.test.runTheBank.domain.validator.ExceptionMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +17,6 @@ import java.io.IOException;
 public class WebGatewayImpl implements WebGateway {
     private final OkHttpClient okHttpClient;
     private final Json json;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
 
     public WebGatewayImpl(OkHttpClient okHttpClient, Json json) {
         this.okHttpClient = okHttpClient;
@@ -26,26 +24,23 @@ public class WebGatewayImpl implements WebGateway {
     }
 
     @Override
-    public NotificationResponse sendNotification(Transaction transaction) {
+    public AddressFromViaCep getAddressByZipcode(String zipcode) {
         try {
-            log.info("Making request to external api for notification");
-            var transactionAsJson = json.toJson(transaction);
-            RequestBody requestBody = RequestBody.create(JSON, transactionAsJson);
             Request request = new Request.Builder()
-                    .url("https://run.mocky.io/v3/9769bf3a-b0b6-477a-9ff5-91f63010c9d3")
-                    .post(requestBody)
+                    .url("https://viacep.com.br/ws/:zipcode/json".replace(":zipcode", zipcode))
+                    .get()
                     .build();
             Call call = okHttpClient.newCall(request);
             Response response = call.execute();
-            if(response.code() != 200){
-                return NotificationResponse.builder()
-                        .message("Error while sending notification to client")
+            if(response.code() != 200 || response.body()==null){
+                return AddressFromViaCep.builder()
+                        .message("Error while getting address with zipcode: " + zipcode)
                         .build();
             }
-            return json.fromJson(response.body().string(), NotificationResponse.class);
+            return json.fromJson(response.body().string(), AddressFromViaCep.class);
         } catch (IOException e) {
-            log.error("Error while sending notification to external API {}", e.getMessage());
-            throw new ApiException(ExceptionMessage.valueOf("Error while sending notification"));
+            log.error("Error while getting address {}", e.getMessage());
+            throw new ApiException(ExceptionMessage.valueOf("Error while getting address"));
         }
     }
 }

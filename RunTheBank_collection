@@ -35,7 +35,7 @@
 								}
 							}
 						},
-						"url": "localhost:8080/register"
+						"url": "localhost:8080/address"
 					},
 					"response": []
 				},
@@ -70,13 +70,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/register?id={{REGISTER_ID}}",
+							"raw": "localhost:8080/address?id={{REGISTER_ID}}",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"register"
+								"address"
 							],
 							"query": [
 								{
@@ -99,13 +99,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/account?id={{ACCOUNT_ID}}",
+							"raw": "localhost:8080/client?id={{ACCOUNT_ID}}",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"account"
+								"client"
 							],
 							"query": [
 								{
@@ -143,7 +143,7 @@
 								}
 							}
 						},
-						"url": "localhost:8080/account"
+						"url": "localhost:8080/client"
 					},
 					"response": []
 				}

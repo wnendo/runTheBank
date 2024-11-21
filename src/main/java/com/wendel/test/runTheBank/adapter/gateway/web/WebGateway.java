@@ -1,8 +1,7 @@
 package com.wendel.test.runTheBank.adapter.gateway.web;
 
-import com.wendel.test.runTheBank.adapter.controller.response.NotificationResponse;
-import com.wendel.test.runTheBank.domain.Transaction;
+import com.wendel.test.runTheBank.adapter.controller.response.AddressFromViaCep;
 
 public interface WebGateway {
-    NotificationResponse sendNotification(Transaction transaction);
+    AddressFromViaCep getAddressByZipcode(String zipcode);
 }
