@@ -7,9 +7,11 @@ import com.wendel.test.runTheBank.adapter.controller.response.ClientResponse;
 import com.wendel.test.runTheBank.adapter.gateway.web.WebGateway;
 import com.wendel.test.runTheBank.domain.Address;
 import com.wendel.test.runTheBank.domain.Client;
+import com.wendel.test.runTheBank.usecase.address.GetAddress;
 import com.wendel.test.runTheBank.usecase.address.SaveAddress;
-import com.wendel.test.runTheBank.usecase.client.CreateClient;
+import com.wendel.test.runTheBank.usecase.client.GetClient;
 import com.wendel.test.runTheBank.usecase.client.SaveClient;
+import com.wendel.test.runTheBank.usecase.client.UpdateClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,38 +19,42 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class CreateClientImpl implements CreateClient {
+public class UpdateClientImpl implements UpdateClient {
     private final SaveClient saveClient;
     private final SaveAddress saveAddress;
     private final ClientMapper clientMapper;
     private final WebGateway webGateway;
     private final AddressMapper addressMapper;
+    private final GetClient getClient;
+    private final GetAddress getAddress;
 
-    public CreateClientImpl(SaveClient saveClient, SaveAddress saveAddress, ClientMapper clientMapper, WebGateway webGateway, AddressMapper addressMapper) {
+    public UpdateClientImpl(SaveClient saveClient, SaveAddress saveAddress, ClientMapper clientMapper, WebGateway webGateway, AddressMapper addressMapper, GetClient getClient, GetAddress getAddress) {
         this.saveClient = saveClient;
         this.saveAddress = saveAddress;
         this.clientMapper = clientMapper;
         this.webGateway = webGateway;
         this.addressMapper = addressMapper;
+        this.getClient = getClient;
+        this.getAddress = getAddress;
     }
 
     @Override
     public ClientResponse execute(ClientRequest clientRequest) {
         try {
-            Address address = new Address();
-            String clientId = UUID.randomUUID().toString();
+            var address = new Address();
+            var client = clientMapper.convertClientResponseToClient(getClient.execute(clientRequest.getCpf()));
 
-            var client = createClient(clientRequest, clientId, address);
+            address = createAddress(clientRequest.getZipcode(), client);
 
-            if (clientRequest.getZipcode() != null) {
-                address = createAddress(clientRequest.getZipcode(), clientId);
-            }
+            client.setName(clientRequest.getName());
+            client.setAge(clientRequest.getAge());
             client.setAddress(address);
+
             saveClient.execute(client);
 
             return ClientResponse.builder()
                     .id(client.getId())
-                    .message("Client created")
+                    .message("Client updated")
                     .build();
         } catch (Exception e) {
             log.error("Error while trying to CREATE client {}", e.getMessage());
@@ -58,25 +64,19 @@ public class CreateClientImpl implements CreateClient {
         }
     }
 
-    private Address createAddress(String zipcode, String clientId) {
-
-        log.info("Searching for address by zipcode {}", zipcode);
-        var addressFromViaCep = webGateway.getAddressByZipcode(zipcode);
-        var address = addressMapper.convertAddressFromViaCepToAddress(addressFromViaCep);
-        address.setId(UUID.randomUUID().toString());
-        log.info("Saving Address");
-        saveAddress.execute(address, clientId);
-
-        return address;
-    }
-
-    private Client createClient(ClientRequest clientRequest, String clientId, Address address) {
-        var client = clientMapper.convertClientRequestToClient(clientRequest, clientId, address);
-        log.info("Creating client with id {}", client.getId());
-
-        saveClient.execute(client);
-        log.info("Client created successfully");
-
-        return client;
+    private Address createAddress(String zipcode, Client client) {
+        log.info("Creating Address");
+        if (zipcode == null && client.getAddress() != null) {
+            var addressExisted = client.getAddress();
+            saveAddress.execute(addressExisted, client.getId());
+            return addressExisted;
+        } else {
+            log.info("Searching for address by zipcode {}", zipcode);
+            var addressFromViaCep = webGateway.getAddressByZipcode(zipcode);
+            var address = addressMapper.convertAddressFromViaCepToAddress(addressFromViaCep);
+            address.setId(client.getAddress().getId());
+            saveAddress.execute(address, client.getId());
+            return address;
+        }
     }
 }

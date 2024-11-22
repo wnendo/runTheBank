@@ -12,7 +12,6 @@ public class AddressMapper {
 
     public Address convertAddressFromViaCepToAddress(AddressFromViaCep addressFromViaCep) {
         return Address.builder()
-                .id(UUID.randomUUID().toString())
                 .address(addressFromViaCep.getLogradouro())
                 .neighborhood(addressFromViaCep.getBairro())
                 .zipcode(addressFromViaCep.getCep())
@@ -24,11 +23,25 @@ public class AddressMapper {
 
     public AddressResponse convertAddressDataToAddress(Address address) {
         return AddressResponse.builder()
+                .id(address.getId())
                 .address(address.getAddress())
                 .neighborhood(address.getNeighborhood())
                 .zipcode(address.getZipcode())
                 .city(address.getCity())
                 .additionalAddress(address.getAdditionalAddress())
+                .clientId(address.getId())
+                .build();
+    }
+
+    public Address convertAddressResponseToAddress(AddressResponse address) {
+        return Address.builder()
+                .id(address.getId())
+                .address(address.getAddress())
+                .neighborhood(address.getNeighborhood())
+                .zipcode(address.getZipcode())
+                .city(address.getCity())
+                .additionalAddress(address.getAdditionalAddress())
+                .client(address.getClientId())
                 .build();
     }
 

@@ -20,7 +20,7 @@ public class SaveClientImpl implements SaveClient {
     @Override
     public void execute(Client client){
         try{
-            log.info("Saving client {}", client.getId());
+            log.info("Saving client");
             dbGateway.saveClient(client);
         }catch (Exception e){
             log.error("Error while getting client with id {} - {}", client.getId(), e.getMessage());

@@ -18,10 +18,10 @@ public class SaveAddressImpl implements SaveAddress {
     }
 
     @Override
-    public void execute(Address address){
+    public void execute(Address address, String clientId){
         try{
             log.info("Saving address {}", address.getId());
-            dbGateway.saveAddress(address);
+            dbGateway.saveAddress(address, clientId);
         }catch (Exception e){
             log.error("Error while saving address with id {} - {}", address.getId(), e.getMessage());
             throw new ApiException(ExceptionMessage.valueOf("Error while saving address"));

@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.adapter.controller.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+
+import java.util.List;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -19,19 +22,20 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientEntity {
-    @GeneratedValue(strategy = SEQUENCE)
-    private Long pk;
     @Id
-    @Column(name = "id", unique=true, nullable = false)
+    @Column(name = "id", nullable = false)
     private String id;
-    @Column(name = "cpf", unique=true, nullable = false)
+    @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private String age;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "deleted")
+    private boolean delete = false;
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private AddressEntity addressEntity;
 }

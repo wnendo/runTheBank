@@ -7,6 +7,7 @@ import com.wendel.test.runTheBank.adapter.gateway.util.ClientValidate;
 import com.wendel.test.runTheBank.usecase.client.CreateClient;
 import com.wendel.test.runTheBank.usecase.client.DeleteClient;
 import com.wendel.test.runTheBank.usecase.client.GetClient;
+import com.wendel.test.runTheBank.usecase.client.UpdateClient;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,13 +22,15 @@ public final class ClientTest {
     private DeleteClient deleteClient;
     @Mock
     private ClientValidate clientValidate;
+    @Mock
+    private UpdateClient updateClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void setup() {
         createClient = Mockito.mock(CreateClient.class);
-        clientController = new ClientController(createClient, getClient, deleteClient, clientValidate);
+        clientController = new ClientController(createClient, getClient, deleteClient, updateClient, clientValidate);
     }
 
 }

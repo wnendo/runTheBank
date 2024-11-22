@@ -6,6 +6,7 @@ import com.wendel.test.runTheBank.adapter.gateway.util.ClientValidate;
 import com.wendel.test.runTheBank.usecase.client.CreateClient;
 import com.wendel.test.runTheBank.usecase.client.DeleteClient;
 import com.wendel.test.runTheBank.usecase.client.GetClient;
+import com.wendel.test.runTheBank.usecase.client.UpdateClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,14 @@ public class ClientController {
     private final CreateClient createClient;
     private final GetClient getClient;
     private final DeleteClient deleteClient;
+    private final UpdateClient updateClient;
     private final ClientValidate clientValidate;
 
-    public ClientController(CreateClient createClient, GetClient getClient, DeleteClient deleteClient, ClientValidate clientValidate) {
+    public ClientController(CreateClient createClient, GetClient getClient, DeleteClient deleteClient, UpdateClient updateClient, ClientValidate clientValidate) {
         this.createClient = createClient;
         this.getClient = getClient;
         this.deleteClient = deleteClient;
+        this.updateClient = updateClient;
         this.clientValidate = clientValidate;
     }
 
@@ -53,6 +56,6 @@ public class ClientController {
     public ClientResponse updateClient(
             @RequestBody ClientRequest clientRequest) {
         clientValidate.validate(clientRequest);
-        return createClient.execute(clientRequest);
+        return updateClient.execute(clientRequest);
     }
 }

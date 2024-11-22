@@ -3,6 +3,7 @@ package com.wendel.test.runTheBank.usecase.client.impl;
 import com.wendel.test.runTheBank.adapter.controller.mapper.ClientMapper;
 import com.wendel.test.runTheBank.adapter.controller.response.ClientResponse;
 import com.wendel.test.runTheBank.adapter.gateway.db.DbGateway;
+import com.wendel.test.runTheBank.usecase.cipher.EncryptRequest;
 import com.wendel.test.runTheBank.usecase.client.GetClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,22 +13,24 @@ import org.springframework.stereotype.Service;
 public class GetClientImpl implements GetClient {
     private final DbGateway dbGateway;
     private final ClientMapper clientMapper;
+    private final EncryptRequest encryptRequest;
 
-    public GetClientImpl(DbGateway dbGateway, ClientMapper clientMapper) {
+    public GetClientImpl(DbGateway dbGateway, ClientMapper clientMapper, EncryptRequest encryptRequest) {
         this.dbGateway = dbGateway;
         this.clientMapper = clientMapper;
+        this.encryptRequest = encryptRequest;
     }
 
     @Override
-    public ClientResponse execute(String id){
+    public ClientResponse execute(String cpf){
         try{
-            log.info("Searching for account {}", id);
-            return clientMapper.convertClientToClientResponse(dbGateway.getClient(id));
+            log.info("Searching for client {}", cpf);
+            return clientMapper.convertClientToClientResponse(dbGateway.getClient(encryptRequest.execute(cpf)));
         }catch (Exception e){
-            log.error("Error while getting client with id {} - {}", id, e.getMessage());
+            log.error("Error while getting client with cpf {} - {}", cpf, e.getMessage());
             return ClientResponse.builder()
-                    .id(id)
-                    .cpf("Error while searching for client")
+                    .cpf(cpf)
+                    .message("Error while searching for client")
                     .build();
         }
     }

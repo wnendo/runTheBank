@@ -27,10 +27,10 @@ public class DbGatewayImpl implements DbGateway {
     }
 
     @Override
-    public void saveAddress(Address address) {
+    public void saveAddress(Address address, String clientId) {
         try {
             log.info("Saving address {}", address.getId());
-            addressRepository.save(addressMapperDomainAndEntity.convertAddressToAddressEntity(address));
+            addressRepository.save(addressMapperDomainAndEntity.convertAddressToAddressEntity(address, clientId));
         }catch (Exception e){
             log.error("Error while trying to save address with id {}", address.getId());
             throw new RuntimeException(e);
@@ -77,18 +77,18 @@ public class DbGatewayImpl implements DbGateway {
                     clientRepository.findByCpf(id)
                             .orElseThrow());
         }catch (Exception e){
-            log.error("Error while trying to get client with id {}", id);
+            log.error("Error while trying to get client with id {} {}", id , e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
 
     @Override
-    public void deleteClient(String id) {
+    public void deleteClient(String cpf) {
         try {
-            clientRepository.deleteById(id);
+            clientRepository.updateClient(cpf);
         }catch (Exception e){
-            log.error("Error while trying to delete client with id {}", id);
+            log.error("Error while trying to delete client with id {}", cpf);
             throw new RuntimeException(e);
         }
     }

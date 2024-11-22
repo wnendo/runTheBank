@@ -1,13 +1,10 @@
 package com.wendel.test.runTheBank.adapter.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wendel.test.runTheBank.domain.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +18,6 @@ public class AddressResponse {
     private String zipcode;
     private String city;
     private String additionalAddress;
-    private List<Client> client;
+    private String clientId;
     private String message;
 }

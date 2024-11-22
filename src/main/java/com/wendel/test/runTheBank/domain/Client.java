@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,10 +8,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Client {
     private String id;
     private String cpf;
     private String name;
     private String age;
-    private String addressId;
+    private Address address;
 }

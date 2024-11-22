@@ -5,7 +5,7 @@ import com.wendel.test.runTheBank.domain.Address;
 
 public interface DbGateway {
 
-    void saveAddress(Address address);
+    void saveAddress(Address address, String clientId);
     Address getAddress(String id);
     void saveClient(Client client);
     void deleteAddress(String id);

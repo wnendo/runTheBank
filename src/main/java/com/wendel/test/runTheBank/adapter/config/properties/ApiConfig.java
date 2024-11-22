@@ -1,5 +1,6 @@
 package com.wendel.test.runTheBank.adapter.config.properties;
 
+import com.wendel.test.runTheBank.adapter.gateway.util.AddressValidate;
 import com.wendel.test.runTheBank.adapter.gateway.util.CpfCnpjValidator;
 import com.wendel.test.runTheBank.adapter.gateway.util.ClientValidate;
 import okhttp3.OkHttpClient;
@@ -16,6 +17,10 @@ public class ApiConfig {
     @Bean
     public ClientValidate clientValidate(){
         return new ClientValidate(new CpfCnpjValidator());
+    }
+    @Bean
+    public AddressValidate addressValidate(){
+        return new AddressValidate();
     }
     @Bean
     public CpfCnpjValidator cpfCnpjValidator(){

@@ -6,19 +6,28 @@ import com.wendel.test.runTheBank.domain.Address;
 import com.wendel.test.runTheBank.domain.Client;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class ClientMapper {
 
-    public Client convertClientRequestToClient(ClientRequest clientRequest, String addressId) {
+    public Client convertClientRequestToClient(ClientRequest clientRequest, String clientId, Address address) {
 
         return Client.builder()
-                .id(UUID.randomUUID().toString())
+                .id(clientId)
                 .cpf(clientRequest.getCpf())
                 .name(clientRequest.getName())
                 .age(clientRequest.getAge())
-                .addressId(addressId)
+                .address(address)
+                .build();
+    }
+
+    public Client convertClientResponseToClient(ClientResponse clientResponse) {
+
+        return Client.builder()
+                .id(clientResponse.getId())
+                .cpf(clientResponse.getCpf())
+                .name(clientResponse.getName())
+                .age(clientResponse.getAge())
+                .address(clientResponse.getAddress())
                 .build();
     }
     public ClientResponse convertClientToClientResponse(Client client) {
@@ -27,7 +36,7 @@ public class ClientMapper {
                 .name(client.getName())
                 .cpf(client.getCpf())
                 .age(client.getAge())
-                .addressId(client.getAddressId())
+                .address(client.getAddress())
                 .build();
     }
 }

@@ -16,7 +16,6 @@ public class ClientValidate implements Validation<ClientRequest> {
     public void validate(ClientRequest clientRequest){
         notNull(clientRequest, ExceptionMessage.NOT_NULL);
         notNull(clientRequest.getCpf(), ExceptionMessage.ERROR_CPF_CNPJ_NULL);
-        notNull(clientRequest.getZipcode(), ExceptionMessage.ERROR_CPF_CNPJ_NULL);
         if(!cpfCnpjValidator.isCnpj(clientRequest.getCpf()) && !cpfCnpjValidator.isCpf(clientRequest.getCpf()))
             throw new ApiException(ExceptionMessage.ERROR_CPF_CNPJ_VALIDATE);
     }

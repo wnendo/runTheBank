@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,9 +14,9 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientResponse {
     private String id;
-    private String addressId;
     private String name;
     private String cpf;
     private String age;
+    private Address address;
     private String message;
 }
